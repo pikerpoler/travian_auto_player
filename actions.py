@@ -27,5 +27,12 @@ def login(email, password, low_resolution=True):
     return driver
 
 def get_resources():
-
+    pass
+def get_production():
+    pass
+def get_fields():
+    pass
+def get_buildings():
+    pass
+def get_done_at():
     pass
