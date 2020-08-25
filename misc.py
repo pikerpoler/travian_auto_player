@@ -14,6 +14,10 @@ class Resources:
         best_index = np.where(self.vector == np.amin(self.vector))[0][0]
         return RESOURCE_NAMES[best_index]
 
+    def max(self):
+        best_index = np.where(self.vector == np.amax(self.vector))[0][0]
+        return RESOURCE_NAMES[best_index]
+
     def __add__(self, other):
         
         if type(other) == Resources:
@@ -43,7 +47,7 @@ class Resources:
             
         return Resources(*new_resources)
     
-    def __div__(self, other):
+    def __truediv__(self, other):
         if type(other) == Resources:
             new_resources = self.vector / other.vector
 
