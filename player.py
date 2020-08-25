@@ -22,4 +22,4 @@ class Village:
     def best_resource_to_upgrade(self):
         self.refresh()
         time_until_full = (self.capacities - self.resources)*60/self.production
-        best_choice_index =
+        return time_until_full.min()
