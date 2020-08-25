@@ -1,3 +1,5 @@
+import numpy as np
+
 class Resources:
     def __init__(self, wood, clay, iron, crop):
         self.vector = np.array([wood, clay, iron, crop])

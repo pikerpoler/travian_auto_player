@@ -25,3 +25,7 @@ def login(email, password, low_resolution=True):
     driver.find_element_by_xpath(login_xpaths['login_button']).click()
 
     return driver
+
+def get_resources():
+
+    pass
