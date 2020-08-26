@@ -1,13 +1,15 @@
 from selenium import webdriver
 from time import sleep
 
-def login(email, password, low_resolution=True):
+NISSIM_PATH_TO_CHROMEDRIVER = r'C:\Users\nadav\Documents\Coding\misc\chromedriver.exe'
+
+def login(path_to_chromedriver, email, password, low_resolution=True):
     login_xpaths = {'username_field': '//*[@id="content"]/div[1]/div[1]/form/table/tbody/tr[1]/td[2]/input',
               'password_field': '//*[@id="content"]/div[1]/div[1]/form/table/tbody/tr[2]/td[2]/input',
               'low_resolution_tickbox': '//*[@id="content"]/div[1]/div[1]/form/table/tbody/tr[3]/td[2]/label/input',
               'login_button': '//*[@id="s1"]',
                 'close_cookies': '//*[@id="CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll"]'}
-    driver = webdriver.Chrome(r'C:\Users\nadav\Documents\Coding\misc\chromedriver.exe')
+    driver = webdriver.Chrome(path_to_chromedriver)
     driver.get('https://ts2.travian.com/')
     sleep(0.5)
     while True:
