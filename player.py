@@ -1,5 +1,5 @@
 from actions import *
-
+from actions import get_resources
 
 
 class Village:
@@ -7,9 +7,9 @@ class Village:
         self.resources = get_resources()
         self.capacities = get_capacities()
         self.production = get_production()
-        self.fields = get_fields()
-        self.buildings = get_buildings()
-        self.done_at = get_done_at()
+        # self.fields = get_fields()
+        # self.buildings = get_buildings()
+        # self.done_at = get_done_at()
 
     def refresh(self, *args):
         if "r" in args or "resources" in args:
@@ -18,16 +18,17 @@ class Village:
             self.capacities = get_capacities()
         if "p" in args or "production" in args:
             self.production = get_production()
-        if "f" in args or "fields" in args:
-            self.fields = get_fields()
-        if "b" in args or "buildings" in args:
-            self.buildings = get_buildings()
-        if "d" in args or "done_at" in args:
-            self.done_at = get_done_at()
+        # if "f" in args or "fields" in args:
+        #     self.fields = get_fields()
+        # if "b" in args or "buildings" in args:
+        #     self.buildings = get_buildings()
+        # if "d" in args or "done_at" in args:
+        #     self.done_at = get_done_at()
 
     def best_resource_to_upgrade(self):
-        self.refresh(["r", "c" ,"p"])
-        time_until_full = (self.capacities - self.resources)*60/self.production
-        return time_until_full.min()
+        self.refresh("r", "c", "p")
+        time_until_full = (self.capacities - self.resources)/self.production  # in hours
+        print(time_until_full)
+        return time_until_full.max()
 
-    def missing_storage(self):
+
