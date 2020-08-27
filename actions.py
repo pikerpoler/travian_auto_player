@@ -7,6 +7,7 @@ from misc import Resources
 
 NISSIM_PATH_TO_CHROMEDRIVER = r'C:\Users\nadav\Documents\Coding\misc\chromedriver.exe'
 
+
 def login(path_to_chromedriver, email, password, low_resolution=True):
     login_xpaths = {'username_field': '//*[@id="content"]/div[1]/div[1]/form/table/tbody/tr[1]/td[2]/input',
               'password_field': '//*[@id="content"]/div[1]/div[1]/form/table/tbody/tr[2]/td[2]/input',
@@ -14,6 +15,7 @@ def login(path_to_chromedriver, email, password, low_resolution=True):
               'login_button': '//*[@id="s1"]',
                 'close_cookies': '//*[@id="CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll"]'}
     driver = webdriver.Chrome(path_to_chromedriver)
+
     driver.get('https://ts2.travian.com/')
     sleep(0.5)
     while True:
@@ -33,68 +35,67 @@ def login(path_to_chromedriver, email, password, low_resolution=True):
     return driver
 
 
-crop_fields = ('//*[@id="resourceFieldContainer"]/div[2]/div',
-               '//*[@id="resourceFieldContainer"]/div[15]/div',
-               '//*[@id="resourceFieldContainer"]/div[8]/div',
-               '//*[@id="resourceFieldContainer"]/div[9]/div',
-               '//*[@id="resourceFieldContainer"]/div[13]/div',
-               '//*[@id="resourceFieldContainer"]/div[12]/div')
+CROP_FIELDS_XPATHS = ('//*[@id="resourceFieldContainer"]/div[2]/div',
+                        '//*[@id="resourceFieldContainer"]/div[8]/div',
+                        '//*[@id="resourceFieldContainer"]/div[9]/div',
+                        '//*[@id="resourceFieldContainer"]/div[12]/div',
+                        '//*[@id="resourceFieldContainer"]/div[13]/div',
+                        '//*[@id="resourceFieldContainer"]/div[15]/div')
 
-lumber_fields = ('//*[@id="resourceFieldContainer"]/div[1]/div',
-                 '//*[@id="resourceFieldContainer"]/div[3]/div',
-                 '//*[@id="resourceFieldContainer"]/div[17]/div',
-                 '//*[@id="resourceFieldContainer"]/div[14]/div')
+LUMBER_FIELDS_XPATHS = ('//*[@id="resourceFieldContainer"]/div[1]/div',
+                        '//*[@id="resourceFieldContainer"]/div[3]/div',
+                        '//*[@id="resourceFieldContainer"]/div[14]/div',
+                        '//*[@id="resourceFieldContainer"]/div[17]/div')
 
-clay_fields = ('//*[@id="resourceFieldContainer"]/div[5]/div',
-               '//*[@id="resourceFieldContainer"]/div[6]/div',
-               '//*[@id="resourceFieldContainer"]/div[18]/div',
-               '//*[@id="resourceFieldContainer"]/div[16]/div')
+CLAY_FIELDS_XPATHS = ('//*[@id="resourceFieldContainer"]/div[5]/div',
+                        '//*[@id="resourceFieldContainer"]/div[6]/div',
+                        '//*[@id="resourceFieldContainer"]/div[16]/div',
+                        '//*[@id="resourceFieldContainer"]/div[18]/div')
 
-iron_fields = ('//*[@id="resourceFieldContainer"]/div[4]/div',
-               '//*[@id="resourceFieldContainer"]/div[7]/div',
-               '//*[@id="resourceFieldContainer"]/div[11]/div',
-               '//*[@id="resourceFieldContainer"]/div[10]/div')
+IRON_FIELDS_XPATHS = ('//*[@id="resourceFieldContainer"]/div[4]/div',
+                        '//*[@id="resourceFieldContainer"]/div[7]/div',
+                        '//*[@id="resourceFieldContainer"]/div[10]/div',
+                        '//*[@id="resourceFieldContainer"]/div[11]/div')
 
-fields_xpaths = {'crop': crop_fields, 'lumber': lumber_fields,
-                 'clay': clay_fields, 'iron': iron_fields}
+FIELDS_BY_RESOURCE = {'crop': CROP_FIELDS_XPATHS, 'lumber': LUMBER_FIELDS_XPATHS,
+                      'clay': CLAY_FIELDS_XPATHS, 'iron': IRON_FIELDS_XPATHS}
 
-production_xpaths = {'lumber': '//*[@id="production"]/tbody/tr[1]/td[3]',
+PRODUCTION_XPATHS = {'lumber': '//*[@id="production"]/tbody/tr[1]/td[3]',
                      'clay': '//*[@id="production"]/tbody/tr[2]/td[3]',
                      'iron': '//*[@id="production"]/tbody/tr[3]/td[3]',
                      'crop': '//*[@id="production"]/tbody/tr[4]/td[3]'}  ##only in resource page!
 
-resources_amounts_xpaths = {'lumber': '//*[@id="l1"]',
+RESOURCES_AMOUNTS_XPATHS = {'lumber': '//*[@id="l1"]',
                             'clay': '//*[@id="l2"]',
-    
                             'iron': '//*[@id="l3"]',
                             'crop': '//*[@id="l4"]'}
 
-capacities_xpaths = {'warehouse': '//*[@id="stockBar"]/div[1]/div/div',
+CAPACITIES_XPATHS = {'warehouse': '//*[@id="stockBar"]/div[1]/div/div',
                      'granery': '//*[@id="stockBar"]/div[2]/div/div'}
 
 FREECROP_XPATH = '//*[@id="stockBarFreeCrop"]'
 
 def get_resources(driver):
-    xpaths = [resources_amounts_xpaths[res] for res in ['lumber', 'clay', 'iron', 'crop']]
+    xpaths = [RESOURCES_AMOUNTS_XPATHS[res] for res in ['lumber', 'clay', 'iron', 'crop']]
     amounts = [clean_int(driver.find_element_by_xpath(xpath).text) for xpath in xpaths] # TODO clean unicode from text
 
     return Resources(*amounts)
 
 
 def get_capacities(driver):
-    
-    warehouse_capacity = clean_int(driver.find_element_by_xpath(capacities_xpaths['warehouse']).text)
-    granery_capacity = clean_int(driver.find_element_by_xpath(capacities_xpaths['granery']).text)
+
+    warehouse_capacity = clean_int(driver.find_element_by_xpath(CAPACITIES_XPATHS['warehouse']).text)
+    granery_capacity = clean_int(driver.find_element_by_xpath(CAPACITIES_XPATHS['granery']).text)
 
     return Resources(warehouse_capacity, warehouse_capacity, warehouse_capacity, granery_capacity)
 
 
 def get_production(driver):  # TODO: check you are in resource page, otherwisw go there
-    xpaths = [production_xpaths[res] for res in ['lumber', 'clay', 'iron']]
+    xpaths = [PRODUCTION_XPATHS[res] for res in ['lumber', 'clay', 'iron']]
     prod = [clean_int(driver.find_element_by_xpath(xpath).text) for xpath in xpaths]
     freecrop = clean_int(driver.find_element_by_xpath('//*[@id="stockBarFreeCrop"]').text)
     prod += [freecrop]
-    
+
 
     return Resources(*prod)
 
@@ -102,4 +103,44 @@ def clean_int(st):
     digits = '1234567890'
     clean_ls = ''.join([c for c in st if c in digits])
     return int(clean_ls)
-    
+
+
+def find_smallest_field(driver, resource):
+    fields_xpaths = FIELDS_BY_RESOURCE[resource]
+
+    xpath_and_lvl_ls = []
+    for xpath in fields_xpaths:
+
+        elem = driver.find_element_by_xpath(xpath)
+        level = elem.text
+        if level is '':
+            level = 0
+        else:
+            level = int(level)
+
+        xpath_and_lvl_ls += [(elem, level)]
+
+    return min(xpath_and_lvl_ls, key=lambda x: x[1])
+
+
+def upgrade_field(driver, resource):
+    elem, level = find_smallest_field(driver, resource)
+
+    elem.click()
+    time.sleep(2)
+    try:
+        upgrade_button = driver.find_element_by_xpath('//*[@id="build"]/div[3]/div[4]/div[1]/button')
+    except:
+        time.sleep(.1)
+
+    #     try:
+    #         not_enough_resource_msg = driver.find_element_by_xpath('//*[@id="contract"]/div[2]/div')
+    #         msg_text = not_enough_resource_msg.text
+    #         if 'Enough resources on' in msg_text:
+    #     except:
+    #         pass
+
+    if 'Construct with master builder' in upgrade_button.text:
+        return
+    else:
+        upgrade_button.click()

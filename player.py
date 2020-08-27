@@ -27,7 +27,6 @@ class Village:
     def best_resource_to_upgrade(self):
         self.refresh("r", "c", "p")
         time_until_full = (self.capacities - self.resources)/self.production  # in hours
-        print(time_until_full)
         return time_until_full.max()
 
 
