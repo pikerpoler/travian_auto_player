@@ -1,0 +1,4 @@
+1. "best_resource_to_buy" needs to calculate which resourch will fill up last AFTER the current building is complete. 
+needs to calculate what the resource ammounts at completion, than calculate the fill times with what is going to be the new production 
+
+2. 

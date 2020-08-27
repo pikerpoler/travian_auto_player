@@ -2,7 +2,7 @@ from selenium import webdriver
 from time import sleep
 from misc import Resources
 
-driver = webdriver.Chrome(r'C:\Users\nadav\Documents\Coding\misc\chromedriver.exe')
+# driver = webdriver.Chrome(r'C:\Users\nadav\Documents\Coding\misc\chromedriver.exe')
 
 
 NISSIM_PATH_TO_CHROMEDRIVER = r'C:\Users\nadav\Documents\Coding\misc\chromedriver.exe'
@@ -13,10 +13,7 @@ def login(path_to_chromedriver, email, password, low_resolution=True):
               'low_resolution_tickbox': '//*[@id="content"]/div[1]/div[1]/form/table/tbody/tr[3]/td[2]/label/input',
               'login_button': '//*[@id="s1"]',
                 'close_cookies': '//*[@id="CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll"]'}
-<<<<<<< HEAD
     driver = webdriver.Chrome(path_to_chromedriver)
-=======
->>>>>>> b13d65861ade86c0a18928a0ceb5dda8c51eb4cf
     driver.get('https://ts2.travian.com/')
     sleep(0.5)
     while True:
@@ -68,29 +65,41 @@ production_xpaths = {'lumber': '//*[@id="production"]/tbody/tr[1]/td[3]',
 
 resources_amounts_xpaths = {'lumber': '//*[@id="l1"]',
                             'clay': '//*[@id="l2"]',
+    
                             'iron': '//*[@id="l3"]',
                             'crop': '//*[@id="l4"]'}
 
 capacities_xpaths = {'warehouse': '//*[@id="stockBar"]/div[1]/div/div',
                      'granery': '//*[@id="stockBar"]/div[2]/div/div'}
 
+FREECROP_XPATH = '//*[@id="stockBarFreeCrop"]'
 
-def get_resources():
+def get_resources(driver):
     xpaths = [resources_amounts_xpaths[res] for res in ['lumber', 'clay', 'iron', 'crop']]
-    amounts = [int(driver.find_element_by_xpath(xpath).text) for xpath in xpaths] # TODO clean unicode from text
+    amounts = [clean_int(driver.find_element_by_xpath(xpath).text) for xpath in xpaths] # TODO clean unicode from text
 
     return Resources(*amounts)
 
 
-def get_capacities():
-    warehouse_capacity = int(driver.find_element_by_xpath(capacities_xpaths['warehouse']).text[1:-1])
-    granery_capacity = int(driver.find_element_by_xpath(capacities_xpaths['granery']).text[1:-1])
+def get_capacities(driver):
+    
+    warehouse_capacity = clean_int(driver.find_element_by_xpath(capacities_xpaths['warehouse']).text)
+    granery_capacity = clean_int(driver.find_element_by_xpath(capacities_xpaths['granery']).text)
 
     return Resources(warehouse_capacity, warehouse_capacity, warehouse_capacity, granery_capacity)
 
 
-def get_production():  # TODO: check you are in resource page, otherwisw go there
-    xpaths = [production_xpaths[res] for res in ['lumber', 'clay', 'iron', 'crop']]
-    prod = [int(driver.find_element_by_xpath(xpath).text[1:-1]) for xpath in xpaths]
+def get_production(driver):  # TODO: check you are in resource page, otherwisw go there
+    xpaths = [production_xpaths[res] for res in ['lumber', 'clay', 'iron']]
+    prod = [clean_int(driver.find_element_by_xpath(xpath).text) for xpath in xpaths]
+    freecrop = clean_int(driver.find_element_by_xpath('//*[@id="stockBarFreeCrop"]').text)
+    prod += [freecrop]
+    
 
     return Resources(*prod)
+
+def clean_int(st):
+    digits = '1234567890'
+    clean_ls = ''.join([c for c in st if c in digits])
+    return int(clean_ls)
+    
