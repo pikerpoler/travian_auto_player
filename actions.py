@@ -124,3 +124,10 @@ def upgrade_field(driver, resource):
         return
     else:
         upgrade_button.click()
+
+    def get_done_in(driver):
+        try:
+            text = driver.find_element_by_xpath('//*[@id="content"]/div[2]/ul/li/div[2]').text.split()[0].split(':')
+            return int(text[0]) * 3600 + int(text[1]) * 60 + int(text[2])
+        except:
+            return 0
