@@ -76,28 +76,8 @@ CAPACITIES_XPATHS = {'warehouse': '//*[@id="stockBar"]/div[1]/div/div',
 FREECROP_XPATH = '//*[@id="stockBarFreeCrop"]'
 
 def get_resources(driver):
-    xpaths = [RESOURCES_AMOUNTS_XPATHS[res] for res in ['lumber', 'clay', 'iron', 'crop']]
-    amounts = [clean_int(driver.find_element_by_xpath(xpath).text) for xpath in xpaths] # TODO clean unicode from text
+    return driver.execute_script("return resources")
 
-    return Resources(*amounts)
-
-
-def get_capacities(driver):
-
-    warehouse_capacity = clean_int(driver.find_element_by_xpath(CAPACITIES_XPATHS['warehouse']).text)
-    granery_capacity = clean_int(driver.find_element_by_xpath(CAPACITIES_XPATHS['granery']).text)
-
-    return Resources(warehouse_capacity, warehouse_capacity, warehouse_capacity, granery_capacity)
-
-
-def get_production(driver):  # TODO: check you are in resource page, otherwisw go there
-    xpaths = [PRODUCTION_XPATHS[res] for res in ['lumber', 'clay', 'iron']]
-    prod = [clean_int(driver.find_element_by_xpath(xpath).text) for xpath in xpaths]
-    freecrop = clean_int(driver.find_element_by_xpath('//*[@id="stockBarFreeCrop"]').text)
-    prod += [freecrop]
-
-
-    return Resources(*prod)
 
 def clean_int(st):
     digits = '1234567890'
@@ -127,11 +107,11 @@ def upgrade_field(driver, resource):
     elem, level = find_smallest_field(driver, resource)
 
     elem.click()
-    time.sleep(2)
+    sleep(2)
     try:
         upgrade_button = driver.find_element_by_xpath('//*[@id="build"]/div[3]/div[4]/div[1]/button')
     except:
-        time.sleep(.1)
+        sleep(.1)
 
     #     try:
     #         not_enough_resource_msg = driver.find_element_by_xpath('//*[@id="contract"]/div[2]/div')
