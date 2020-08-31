@@ -56,6 +56,7 @@ class Resources:
             
         return Resources(*new_resources)
         
+        
     def __str__(self):
         return '|{0}|{1}|{2}|{3}|'.format(*self.vector)
     
