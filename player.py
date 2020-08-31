@@ -42,5 +42,5 @@ class Village:
 
     def time_until_enough_resources(self, current_storage, target_resources, current_production):
         needed_resources = target_resources - current_storage
-        return needed_resources.vector / current_production.vector
+        return needed_resources.vector * 3600 / current_production.vector
 
