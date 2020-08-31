@@ -8,7 +8,7 @@ from misc import Resources
 NISSIM_PATH_TO_CHROMEDRIVER = r'C:\Users\nadav\Documents\Coding\misc\chromedriver.exe'
 
 
-def login(path_to_chromedriver, email, password, low_resolution=True):
+def login(path_to_chromedriver, email, password, url='https://ts2.travian.com/', low_resolution=True):
     login_xpaths = {'username_field': '//*[@id="content"]/div[1]/div[1]/form/table/tbody/tr[1]/td[2]/input',
               'password_field': '//*[@id="content"]/div[1]/div[1]/form/table/tbody/tr[2]/td[2]/input',
               'low_resolution_tickbox': '//*[@id="content"]/div[1]/div[1]/form/table/tbody/tr[3]/td[2]/label/input',
@@ -16,7 +16,7 @@ def login(path_to_chromedriver, email, password, low_resolution=True):
                 'close_cookies': '//*[@id="CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll"]'}
     driver = webdriver.Chrome(path_to_chromedriver)
 
-    driver.get('https://ts2.travian.com/')
+    driver.get(url)
     sleep(0.5)
     while True:
         try:
@@ -125,9 +125,46 @@ def upgrade_field(driver, resource):
     else:
         upgrade_button.click()
 
-    def get_done_in(driver):
-        try:
-            text = driver.find_element_by_xpath('//*[@id="content"]/div[2]/ul/li/div[2]').text.split()[0].split(':')
-            return int(text[0]) * 3600 + int(text[1]) * 60 + int(text[2])
-        except:
-            return 0
+def cost_to_upgrade(driver):
+    lumber = clean_int(driver.find_element_by_xpath('//*[@id="contract"]/div[1]/div[1]/span').text)
+    clay = clean_int(driver.find_element_by_xpath('//*[@id="contract"]/div[1]/div[2]/span').text)
+    iron = clean_int(driver.find_element_by_xpath('//*[@id="contract"]/div[1]/div[3]/span').text)
+    crop = clean_int(driver.find_element_by_xpath('//*[@id="contract"]/div[1]/div[4]/span').text)
+    # free_crop = clean_int(driver.find_element_by_xpath('//*[@id="contract"]/div[1]/div[5]/span').text)
+    return Resources(lumber, clay, iron, crop)
+
+
+
+def get_done_in(driver):
+    try:
+        text = driver.find_element_by_xpath('//*[@id="content"]/div[2]/ul/li/div[2]').text.split()[0].split(':')
+        return int(text[0]) * 3600 + int(text[1]) * 60 + int(text[2])
+    except:
+        return 0
+
+def change_page(driver, page):
+    target_url = PAGE_URLS[page]
+    if driver.current_url == target_url:
+        return
+
+    menu_shortcut = MENU_SHORTCUTS_XPATHS[page]
+    driver.find_element_by_xpath(menu_shortcut).click()
+    return
+
+PAGE_URLS = {
+    'Resources': 'https://ts2.travian.com/dorf1.php',
+    'Buildings': 'https://ts2.travian.com/dorf2.php',
+    'Map': 'https://ts2.travian.com/karte.php',
+    'Statistics': 'https://ts2.travian.com/statistiken.php',
+    'Reports': 'https://ts2.travian.com/berichte.php',
+    'Messages': 'https://ts2.travian.com/messages.php'
+}
+
+MENU_SHORTCUTS_XPATHS = {
+    'Resources': '//*[@id="navigation"]/a[1]',
+    'Buildings': '//*[@id="navigation"]/a[2]',
+    'Map': '//*[@id="navigation"]/a[3]',
+    'Statistics': '//*[@id="navigation"]/a[4]',
+    'Reports': '//*[@id="navigation"]/a[5]',
+    'Messages': '//*[@id="navigation"]/a[6]'
+}

@@ -24,7 +24,8 @@ class Village:
             self.production = Resources(self.resources['production']['l1'],
                                         self.resources['production']['l2'],
                                         self.resources['production']['l3'],
-                                        self.resources['production']['l5'])
+                                        self.resources['production']['l4'])
+            self.free_crop = self.resources['production']['l5']
         # if "f" in args or "fields" in args:
         #     self.fields = get_fields()
         # if "b" in args or "buildings" in args:
@@ -35,11 +36,11 @@ class Village:
     def best_resource_to_upgrade(self):
         self.refresh("r")
         time_until_full = (self.max_storage - self.storage)/self.production  # in hours
-        time_until_full['crop'] /= self.weights["crop_is_lame"]
+        # time_until_full.vector[FIELDS_BY_RESOURCE['crop']] /= self.weights["crop_is_lame"]
         return time_until_full.max()
 
 
-    def time_untill_ready(self, current_storage, target_resources, current_production):
+    def time_until_enough_resources(self, current_storage, target_resources, current_production):
         needed_resources = target_resources - current_storage
         return needed_resources.vector / current_production.vector
 
